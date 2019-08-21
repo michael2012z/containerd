@@ -18,6 +18,7 @@ package fstest
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"math/rand"
 	"net"
@@ -89,6 +90,7 @@ func Remove(name string) Applier {
 // as in os.RemoveAll
 func RemoveAll(name string) Applier {
 	return applyFn(func(root string) error {
+		fmt.Println("-- RemoveAll: 0: ", filepath.Join(root, name))
 		return os.RemoveAll(filepath.Join(root, name))
 	})
 }
@@ -98,9 +100,11 @@ func RemoveAll(name string) Applier {
 func CreateDir(name string, perm os.FileMode) Applier {
 	return applyFn(func(root string) error {
 		fullPath := filepath.Join(root, name)
+		fmt.Println("-- CreateDir: 0: ", fullPath)
 		if err := os.MkdirAll(fullPath, perm); err != nil {
 			return err
 		}
+		fmt.Println("-- CreateDir: 1: ", fullPath)
 		return os.Chmod(fullPath, perm)
 	})
 }
@@ -115,6 +119,7 @@ func Rename(old, new string) Applier {
 // Chown returns a file applier which changes the ownership of a file
 func Chown(name string, uid, gid int) Applier {
 	return applyFn(func(root string) error {
+		fmt.Println("-- Chown: 0: ", filepath.Join(root, name))
 		return os.Chown(filepath.Join(root, name), uid, gid)
 	})
 }

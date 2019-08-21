@@ -34,18 +34,29 @@ func applyToMounts(m []mount.Mount, work string, a fstest.Applier) (err error) {
 	if err != nil {
 		return errors.Wrap(err, "failed to create temp dir")
 	}
-	defer os.RemoveAll(td)
+	fmt.Println("-- applyToMounts: 0: ")
+
+	defer func() {
+		fmt.Println("-- applyToMounts: RemoveAll 0: ")
+		os.RemoveAll(td)
+		fmt.Println("-- applyToMounts: RemoveAll 1: ")
+	}()
 
 	if err := mount.All(m, td); err != nil {
 		return errors.Wrap(err, "failed to mount")
 	}
+	fmt.Println("-- applyToMounts: 1: ")
 	defer func() {
+		fmt.Println("-- applyToMounts: unmountAll 0: ")
 		if err1 := mount.UnmountAll(td, umountflags); err == nil {
 			err = errors.Wrap(err1, "failed to unmount")
 		}
 	}()
 
-	return a.Apply(td)
+	fmt.Println("-- applyToMounts: 2: ")
+	err = a.Apply(td)
+	fmt.Println("-- applyToMounts: 3: ")
+	return err
 }
 
 // createSnapshot creates a new snapshot in the snapshotter
