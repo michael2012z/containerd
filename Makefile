@@ -169,7 +169,7 @@ root-test: ## run tests, except integration tests
 
 integration: ## run integration tests
 	@echo "$(WHALE) $@"
-	@go test ${TESTFLAGS} -test.root -parallel ${TESTFLAGS_PARALLEL}
+	@go test ${TESTFLAGS} -test.root -parallel ${TESTFLAGS_PARALLEL} -timeout 20m
 
 benchmark: ## run benchmarks tests
 	@echo "$(WHALE) $@"
